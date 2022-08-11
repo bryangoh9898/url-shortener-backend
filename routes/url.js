@@ -3,58 +3,54 @@ const ShortUrl = require('../models/ShortUrl');
 var express = require('express');
 var router = express.Router();
 var shortid = require('shortid');
-const dns = require('dns');
+// const dns = require('dns');
 
-/* GET users listing. */
-router.get('/', function(req, res, next) {
-  res.send('Welcome to URL Shortener');
+/* GET All URL. */
+router.get('/short', function(req, res, next) {
+    console.log("Run thi actualyl")
+    ShortUrl.find({})
+    .then((urls) => {
+        res.statusCode = 200;
+        res.setHeader('Content-Type' , 'application/json');
+        res.json(urls)
+        return res
+    }, (err) => next(err))
+    .catch((err) => next(err))
 });
 
 
 //Creates a short URL - and save to database
 router.post('/short', (req, res, next) => {
-    
-    //Takes in the full url 
-    var longUrl = req.body.fullUrl;
 
-    try {
-        longUrl = new URL(longUrl)
-    } catch(err){
-            res.statusCode = 400;
-            res.setHeader('Content-Type' , 'application/json');
-            res.json({error: "Invalid URL Entered"})
-            return res
-    }
+    //Validation for the address if needed
 
-    //Check if URL exists
-    dns.lookup(longUrl.hostname, (err) =>{
-        if(err){
-            res.statusCode = 400;
-            res.setHeader('Content-Type' , 'application/json');
-            res.json({error: "Address not found!"})
-            return res
-        }
-    })
-
-    var newShortUrl = shortid.generate()
+    var newShortUrl = `${req.protocol}://${req.get('host')}/${shortid.generate()}`
 
     //Create the url in database
     ShortUrl.create({fullUrl: req.body.fullUrl, short: newShortUrl})
     .then((result) => {
         res.statusCode = 200;
         res.setHeader('Content-Type' , 'application/json');
-        var temp = `${req.protocol}://${req.get('host')}/${newShortUrl}`
-        console.log("User should see this URL")
-        console.log(temp)
-        res.json(temp)
-        //res.json(result);
+        res.json(result)
     }, (err) => next(err))
     .catch((err) => next(err))
     
 });
 
+router.delete('/short', (req,res,next) => {
+
+    ShortUrl.deleteMany({})
+    .then((result) => {
+        res.statusCode = 200;
+        res.setHeader('Content-Type' , 'application/json');
+        res.json("successsful")
+        return res
+    }, (err) => next(err))
+    .catch((err) => next(err))
+})
+
 //Retrieves all short url saved in database 
-router.get('/:shortUrl' , (req,res,next) => {
+router.get('/short/:shortUrl' , (req,res,next) => {
 
     var shortUrl = req.params.shortUrl;
 
@@ -72,7 +68,8 @@ router.get('/:shortUrl' , (req,res,next) => {
         //We redirect to new page
         res.redirect(url.fullUrl)
 
-    })
+    }, (err) => next(err))
+    .catch((err) => next(err))
 
 })
 

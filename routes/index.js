@@ -10,13 +10,13 @@ router.get('/', function(req, res, next) {
 
 //Retrieves all short url saved in database 
 router.get('/:shortUrl' , (req,res,next) => {
-  var shortUrl = req.params.shortUrl;
+
+  var shortUrl = `${req.protocol}://${req.get('host')}/${req.params.shortUrl}`
 
   //Find the short url in database
   ShortUrl.findOne({short: shortUrl})
   .then((url) => {
       //No such short url has been generated before
-      console.log(url)
       if(url == null){
           res.statusCode = 400;
           res.setHeader('Content-Type' , 'application/json');
@@ -24,10 +24,19 @@ router.get('/:shortUrl' , (req,res,next) => {
           return res
       }
 
-    //We redirect to new page
-    res.redirect(url.fullUrl)
+      //If no HTTPS then we add it
+      if(url.fullUrl.includes("http://") || url.fullUrl.includes("https://")){
+        res.redirect(url.fullUrl)
+      }
+      else{
+        //We manually add
+        res.redirect("https://" + url.fullUrl)
+      }
 
-  })
+
+  }, (err) => next(err))
+  .catch((err) => next(err))
+
 
 })
 
