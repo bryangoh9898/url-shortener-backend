@@ -29,12 +29,12 @@ router.get('/:shortUrl' , (req,res,next) => {
         res.redirect(url.fullUrl)
       }
       else{
-        //We manually add
         res.redirect("https://" + url.fullUrl)
       }
 
 
   }, (err) => next(err))
+  .catch((err) => next(err))
 
 })
 
