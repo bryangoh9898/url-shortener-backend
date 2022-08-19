@@ -36,6 +36,7 @@ router.post('/short', (req, res, next) => {
             //Create the url in database
             ShortUrl.create({fullUrl: req.body.fullUrl, short: newShortUrl})
             .then((result) => {
+                console.log(result);
                 res.statusCode = 200;
                 res.setHeader('Content-Type' , 'application/json');
                 res.json(result)
@@ -47,10 +48,6 @@ router.post('/short', (req, res, next) => {
             res.json("Bad Url")
         }
       });
-
-
-
-    
 });
 
 router.delete('/short', (req,res,next) => {
