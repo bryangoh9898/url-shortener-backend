@@ -19,7 +19,9 @@
     "morgan": "~1.9.1",
     "shortid": "^2.2.16",
     "supertest": "^6.2.4",
-    "url-exist": "^3.0.0"
+    "url-exist": "^3.0.0",
+    "url-exists": "^1.0.3",
+    "valid-url": "^1.0.9"
   },
   "devDependencies": {
     "jest": "^28.1.3",

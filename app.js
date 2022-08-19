@@ -12,10 +12,10 @@ var urlRouter = require('./routes/url');
 
 var app = express();
 
-//Connect to MongoDB
-// var url = 'mongodb+srv://bryangoh:2DerN-A.*$n56!y@cluster0.l3ofw.mongodb.net/myFirstDatabase?retryWrites=true&w=majority';
+const url = 'mongodb://localhost:27017/shortener';
 
-var url = 'mongodb+srv://urlShortener:LyoadohdO3fLQlth@cluster0.ladrmvu.mongodb.net/?retryWrites=true&w=majority'
+//Connect to MongoDB
+// var url = 'mongodb+srv://urlShortener:LyoadohdO3fLQlth@cluster0.ladrmvu.mongodb.net/?retryWrites=true&w=majority'
 const connect = mongoose.connect(url,   {
   useNewUrlParser: true,
   useUnifiedTopology: true,
@@ -31,6 +31,7 @@ connect.then((db) => {
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
 
+//Using Several Middlewares
 app.use(cors());
 app.use(logger('dev'));
 app.use(express.json());
